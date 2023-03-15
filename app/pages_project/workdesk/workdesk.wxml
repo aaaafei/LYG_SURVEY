@@ -1,0 +1,45 @@
+
+<view class="header-box">
+  <view class="notice">  
+
+    <image style="height:29px;width:29px;margin-left:8px;" src="/images/home.png" bindtap="goHome"></image> 
+    <view class="weui-panel__hd" style="color:white;">
+      工作台
+    </view> 
+       
+    <image style="height:22px;width:25px;" src="/images/icon/scan.png" bindtap="scan"></image> 
+  </view> 
+</view>
+ 
+<view  class="swiper-container">
+        <swiper class="swiper1" indicator-dots="true" indicator-active-color="#fff" autoplay circular>
+          <swiper-item wx:for="{{banners}}" wx:key="id">
+            <image  mode="aspectFill" data-url="{{item.picUrl}}" src="/images/banner.png" />
+          </swiper-item>
+        </swiper>
+      </view> 
+
+<view class="notice-box">
+  <view class="notice"> 
+    <view class="weui-panel__hd" style="position:inherit;">默认分组</view>
+  </view> 
+</view>
+<view class="category-box">
+
+  <view class="category-list" wx:for="{{menus}}" wx:key="index">
+    <view >
+      <navigator url="{{item.url}}">
+        <image mode="aspectFill" class="category-imgbox" src="{{item.imgSrc}}"></image>
+        <view class="category-title">{{item.name}}</view>
+        </navigator>
+    </view>          
+  </view> 
+
+
+
+
+</view>
+
+ 
+ 
+ 

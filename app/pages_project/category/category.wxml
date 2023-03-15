@@ -1,0 +1,58 @@
+<!--pages_project/category/category.wxml-->
+<view>
+    <t-divider content="新增总体信息" />
+    <view wx:if="{{loading}}">
+        请耐心等待数据加载
+    </view>
+    <t-skeleton theme="paragraph" loading="{{loading}}"></t-skeleton>
+    <t-skeleton theme="paragraph" loading="{{loading}}"></t-skeleton>
+    <t-skeleton theme="paragraph" loading="{{loading}}"></t-skeleton>
+    <t-skeleton theme="paragraph" loading="{{loading}}"></t-skeleton>
+    <t-skeleton theme="paragraph" loading="{{loading}}"></t-skeleton>
+    <block wx:for="{{formFields}}" wx:key="index" wx:for-item="field">
+        <t-input id="{{field.code}}" value="{{field.value}}" placeholder="{{field.placeholder}}" tips="{{field.tips}}" disabled="{{field.disabled}}" status="error" data-field-code="{{field.code}}" bind:change="handleInputChange" wx:if="{{field.data_type=='string'}}">
+            <view slot="label" style="color:#d8574f;" wx:if="{{field.required}}">
+                *{{field.name}}
+            </view>
+            <view slot="label" wx:else>
+                {{field.name}}
+            </view>
+        </t-input>
+
+        <t-cell id="{{field.code}}"  hover note="{{field.value || ''}}" arrow data-mode="month" data-field-code="{{field.code}}" bindtap="showPicker" wx:if="{{field.data_type=='date_ym'}}" >
+            <view slot="title" style="color:#d8574f;" wx:if="{{field.required}}">
+                *{{field.name}}
+            </view>
+            <view slot="title" wx:else>
+                {{field.name}}
+            </view>
+            <view slot="description" style="color:#d8574f;">
+                {{field.tips}}
+            </view>
+        </t-cell>
+
+        <t-cell id="{{field.code}}"  hover note="{{field.value || ''}}" arrow data-mode="date" data-field-code="{{field.code}}" bindtap="showPicker" wx:if="{{field.data_type=='date'}}" >
+            <view slot="title" style="color:#d8574f;" wx:if="{{field.required}}">
+                *{{field.name}}
+            </view>
+            <view slot="title" wx:else>
+                {{field.name}}
+            </view>
+            <view slot="description" style="color:#d8574f;">
+                {{field.tips}}
+            </view>
+        </t-cell>
+
+    </block>
+    <view class="button-example" wx:if="{{!loading}}">
+        <t-button theme="light" block size="large" bind:tap='save'>仅保存</t-button>
+        <t-button theme="primary" block size="large">保存并提交</t-button>
+    </view>
+    
+   
+
+    <!-- 年月日 -->
+    <t-date-time-picker title="选择日期" visible="{{dateVisible}}" mode="date" defaultValue="{{date}}" format="YYYY-MM-DD" bindchange="onConfirm" bindpick="onColumnChange" bindcancel="hidePicker" start="{{start}}" end="{{end}}" />
+    <!-- 年月 -->
+    <t-date-time-picker title="选择日期" visible="{{monthVisible}}" mode="month" value="{{month}}" format="YYYY-MM" bindchange="onConfirm" bindpick="onColumnChange" bindcancel="hidePicker" start="{{start}}" end="{{end}}" />
+</view>

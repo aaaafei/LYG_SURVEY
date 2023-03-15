@@ -1,0 +1,17 @@
+{
+    "formFields": [
+        {"code":"pcdybh", "name":"普查单元编号", "value":"", "data_type":"string", "tips":"", "placeholder":"禁止编辑", "required":true, "disabled":true},
+        {"code":"bsm", "name":"标识码", "value":"", "data_type":"string", "tips":"", "placeholder":"禁止编辑", "required":true, "disabled":true},
+        {"code":"ssmc", "name":"设施名称", "data_type":"string", "tips":"", "placeholder":"请输入...", "required":true, "disabled":false},
+        {"code":"sswz", "name":"设施位置", "data_type":"string", "tips":"", "placeholder":"请输入...", "required":true, "disabled":false},
+        {"code":"zfbm", "name":"政府主管部门", "data_type":"string", "tips":"", "placeholder":"请输入...", "required":true, "disabled":false},
+        {"code":"jydw", "name":"经营单位", "data_type":"string", "tips":"运管、权属、特许经营单位", "placeholder":"请输入运管、权属、特许经营单位", "required":true, "disabled":false},
+        {"code":"jsdw", "name":"建设单位", "data_type":"string", "tips":"", "placeholder":"请输入...", "required":true, "disabled":false},
+        {"code":"sjdw", "name":"设计单位", "data_type":"string", "tips":"", "placeholder":"请输入...", "required":false, "disabled":false},
+        {"code":"kcdw", "name":"勘察单位", "data_type":"string", "tips":"", "placeholder":"请输入...", "required":false, "disabled":false},
+        {"code":"sgdw", "name":"施工单位", "data_type":"string", "tips":"", "placeholder":"请输入...", "required":true, "disabled":false},
+        {"code":"jcny", "name":"建成年月", "data_type":"date_ym", "tips":"提示信息", "placeholder":"请输入...", "required":true, "disabled":false},
+        {"code":"kssyny", "name":"开始使用年月", "data_type":"date_ym", "tips":"提示信息", "placeholder":"请输入...", "required":true, "disabled":false},
+        {"code":"pcrq", "name":"普查日期", "data_type":"date", "tips":"", "placeholder":"禁止编辑", "required":true, "disabled":true}
+    ]
+}

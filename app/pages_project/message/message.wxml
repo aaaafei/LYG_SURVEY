@@ -1,0 +1,45 @@
+<view class="header-box">
+  <view class="notice">  
+
+<image style="height:29px;width:29px;margin-left:8px;" src="/images/home.png" bindtap="goHome"></image> 
+<view class="weui-panel__hd" style="color:white;">
+  消息
+</view> 
+   
+<image style="height:22px;width:25px;" src="/images/icon/scan.png" bindtap="scan"></image> 
+</view>  
+</view>
+
+
+<view class="weui-search-bar">
+  <view class="weui-search-bar__form">
+      <view class="weui-search-bar__box">
+        <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+        <input type="text" class="weui-search-bar__input" placeholder="搜索"/> 
+      </view> 
+  </view> 
+</view>
+
+
+<view class="page__bd">
+        <view class="weui-cells weui-cells_after-title">
+
+
+            <view class="weui-cell" wx:for="{{listData}}" wx:key="uuid">
+        
+                <view class="weui-cell__hd" style="position: relative;margin-right: 10px;">
+                    <image src="../../images/exchange.png" style="width: 50px; height: 50px; display: block"/>
+                    <!-- <view class="weui-badge" style="position: absolute;top: -.4em;right: -.4em;">8</view> -->
+                </view>
+                <navigator url="{{'../news/detail?uuid='+item.uuid}}">
+                <view class="weui-cell__bd">
+                    <view> {{item.title}}</view> 
+                    <!-- <view style="font-size: 13px;color: #888888;">{{item.content}}</view> -->
+                </view>
+                </navigator>
+            </view>
+           
+           
+         
+        </view>
+    </view>

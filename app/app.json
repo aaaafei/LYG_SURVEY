@@ -1,0 +1,59 @@
+{
+    "pages": [
+        "pages_project/login/login",        
+        "pages_project/workdesk/workdesk",
+        "pages_project/message/message",
+        "pages_project/surveys/surveys",
+        "pages_project/survey_unit/survey_unit",
+        "pages_project/category/category",
+        "pages_project/survey_category/survey_category",
+        "pages_project/section/section"
+    ],
+    "subpackages": [
+    ],
+    "usingComponents": {
+        "t-demo": "./components/demo-block/index",
+        "t-button": "tdesign-miniprogram/button/button",
+        "t-icon": "tdesign-miniprogram/icon/icon",
+        "t-side-bar": "tdesign-miniprogram/side-bar/side-bar",
+        "t-side-bar-item": "tdesign-miniprogram/side-bar-item/side-bar-item",
+        "t-cell-group": "tdesign-miniprogram/cell-group/cell-group",
+        "t-cell": "tdesign-miniprogram/cell/cell",
+        "t-image": "tdesign-miniprogram/image/image",
+        "t-input": "tdesign-miniprogram/input/input",
+        "t-divider": "tdesign-miniprogram/divider/divider",
+        "t-skeleton": "tdesign-miniprogram/skeleton/skeleton",
+        "t-date-time-picker": "tdesign-miniprogram/date-time-picker/date-time-picker",
+        "t-picker": "tdesign-miniprogram/picker/picker",
+        "t-picker-item": "tdesign-miniprogram/picker-item/picker-item",
+        "t-toast": "tdesign-miniprogram/toast/toast"
+    },
+    "window": {
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "#f6f6f6",
+        "backgroundColor": "#f6f6f6",
+        "navigationBarTitleText": "地下基础设施普查",
+        "navigationBarTextStyle": "black"
+    },
+    "tabBar": {
+        "color": "#6e6d6b",
+        "selectedColor": "#85C4FF",
+        "borderStyle": "white",
+        "backgroundColor": "#fff",
+        "list": [
+            {
+                "pagePath": "pages_project/workdesk/workdesk",
+                "iconPath": "images/nav/workdesk-off.png",
+                "selectedIconPath": "images/nav/workdesk-on.png",
+                "text": "工作台"
+            },
+            {
+                "pagePath": "pages_project/message/message",
+                "iconPath": "images/nav/message-off.png",
+                "selectedIconPath": "images/nav/message-on.png",
+                "text": "消息"
+            }
+        ]
+    },
+    "sitemapLocation": "sitemap.json"
+}

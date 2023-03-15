@@ -1,0 +1,14 @@
+<!--pages_project/surveys/surveys.wxml-->
+<view>
+    <view class="example-search">
+        <t-search model:value="{{value}}" placeholder="搜索：普查单元名称" />
+    </view>
+    <view class="footer-example">
+        <t-divider content="共1286个条数据" />
+    </view>
+    <view>
+        <t-cell title="普查单元名称" description="普查单元描述" note="查看详细" url="../survey_unit/survey_unit" hover arrow />
+        <t-cell title="普查单元名称" description="普查单元描述" note="查看详细" hover arrow />
+    </view>
+    
+</view>
