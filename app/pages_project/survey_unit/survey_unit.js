@@ -11,51 +11,11 @@ Page({
     data: {
         sideBarIndex: 0,
         scrollTop: 0,
-        categories: [{
-                label: '给水',
-                code: 'GXJS_ZT',
-                title: '给水-总体信息',
-                badgeProps: {},
-                items: [{
-                        label: "给水_设施位置_设施名称001",
-                        image
-                    },
-                    {
-                        label: "给水_设施位置_设施名称002",
-                        image
-                    },
-                    {
-                        label: "给水_设施位置_设施名称003",
-                        image
-                    },
-                ],
-            },
-            {
-                label: '再生水',
-                code: 'GXJS_ZT',
-                title: '再生水-总体信息',
-                badgeProps: {
-                    dot: true,
-                },
-                items: items.slice(0, 10),
-            },
-            {
-                label: '雨水',
-                code: 'GXJS_ZT',
-                title: '雨水-总体信息',
-                badgeProps: {},
-                items: items.slice(0, 6),
-            },
-            {
-                label: '污水',
-                code: 'GXJS_ZT',
-                title: '污水-总体信息',
-                badgeProps: {
-                    count: 8,
-                },
-                items: items.slice(0, 8),
-            },
-        ],
+        categories: [],
+        pcdyOptions:[],
+        pcdyNote:'请选择普查单元',
+        pcdyCode:'',
+        pcdyVisible:false,
     },
     onSideBarChange(e) {
         const {
@@ -72,5 +32,59 @@ Page({
         wx.navigateTo({
             url: `../category/category?type_code=` + type_code,
         });
+    },
+    // 级联菜单
+    showCascader() {
+        this.setData({
+            pcdyVisible: true
+        });
+    },
+    onChange(e) {
+        const {
+            selectedOptions
+        } = e.detail;
+
+        this.setData({
+            pcdyNote: selectedOptions.map((item) => item.label).join('/'),
+        });
+    },
+    // 获取数据
+    getPcdyOptions(param) {
+        wx.request({
+            url: 'https://easydoc.net/mock/u/58236996/PCDY_TREE',
+            method: 'GET',
+            header: {
+                'content-type': 'application/json'
+            },
+            success: (res) => {
+                this.setData({
+                    pcdyOptions: res.data.areaList,
+                });
+                console.log(res.data.areaList[0]);
+                this.getCategories("");
+            }
+        })
+    },
+    getCategories(param) {
+        wx.request({
+            url: 'https://easydoc.net/mock/u/58236996/categories',
+            method: 'GET',
+            header: {
+                'content-type': 'application/json'
+            },
+            success: (res) => {
+                this.setData({
+                    categories: res.data.categories,
+                });
+            }
+        })
+    },
+    // 生命周期函数--监听页面加载
+    onLoad: function (options) {
+        if(options && options.pcdyCode) {
+            this.getCategories(options.pcdyCode);
+        }else {
+            this.getPcdyOptions("");
+        }
     },
 });

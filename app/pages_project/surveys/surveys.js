@@ -1,23 +1,28 @@
 // pages_project/surveys/surveys.js
-Component({
-    /**
-     * 组件的属性列表
-     */
-    properties: {
-
-    },
-
-    /**
-     * 组件的初始数据
-     */
+Page({
     data: {
-
+        surveys: [],
+        count:0,
     },
-
-    /**
-     * 组件的方法列表
-     */
-    methods: {
-
-    }
+    //
+    getSurveys(param){
+        wx.request({
+            url: 'https://easydoc.net/mock/u/58236996/surveys',
+            method: 'GET',
+            header: {
+                'content-type': 'application/json'
+            },
+            success: (res) => {
+                this.setData({
+                    surveys: res.data.surveys,
+                    count:res.data.count,
+                });
+                console.log(this.data.surveys);
+            }
+        });
+    },
+    // 生命周期函数--监听页面加载
+    onLoad: function (options) {
+        this.getSurveys();
+    },
 })

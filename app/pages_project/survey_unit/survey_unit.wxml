@@ -1,5 +1,8 @@
 <!--pages_project/survey_unit/survey_unit.wxml-->
 <view>
+    <t-cell title="普查单元" data-pcdy-code="{{pcdyCode}}" note="{{pcdyNote}}" bind:click="showCascader" arrow></t-cell>
+    <t-cascader visible="{{pcdyVisible}}" theme="tab" options="{{pcdyOptions}}" title="请选择普查单元" bind:change="onChange"></t-cascader>
+    <t-divider content="普查总体信息" />
     <view style="text-align: right;">
         <t-button theme="light" size="large" bind:tap="onCategoryNew">新增-{{categories[sideBarIndex].label}}-总体信息</t-button>
     </view>

@@ -26,6 +26,7 @@
         "t-date-time-picker": "tdesign-miniprogram/date-time-picker/date-time-picker",
         "t-picker": "tdesign-miniprogram/picker/picker",
         "t-picker-item": "tdesign-miniprogram/picker-item/picker-item",
+        "t-cascader": "tdesign-miniprogram/cascader/cascader",
         "t-toast": "tdesign-miniprogram/toast/toast"
     },
     "window": {
