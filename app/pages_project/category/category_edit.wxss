@@ -1,11 +1,8 @@
-/* pages_project/surveys/surveys.wxss */
-.content {
-    height: 100vh;
-}
-
+/* pages_project/category/category_edit.wxss */
 .button-example {
     margin: 0 32rpx;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 32rpx;
   }
+  

@@ -1,6 +1,6 @@
 <!--pages_project/category/category.wxml-->
 <view>
-    <t-divider content="新增总体信息" />
+    <t-divider content="编辑区间信息" />
     <view wx:if="{{loading}}">
         请耐心等待数据加载
     </view>
@@ -9,6 +9,7 @@
     <t-skeleton theme="paragraph" loading="{{loading}}"></t-skeleton>
     <t-skeleton theme="paragraph" loading="{{loading}}"></t-skeleton>
     <t-skeleton theme="paragraph" loading="{{loading}}"></t-skeleton>
+
     <block wx:for="{{formFields}}" wx:key="index" wx:for-item="field">
         <!-- 文本输入框 -->
         <t-input id="{{field.code}}" value="{{field.value}}" align="right" suffix="{{field.suffix || ''}}" placeholder="{{field.placeholder}}" tips="{{field.tips}}" disabled="{{field.disabled}}" status="warning" data-field-code="{{field.code}}" t-class-tips="tips" bind:change="handleInputChange" wx:if="{{field.data_type=='string'}}">
@@ -64,13 +65,13 @@
                 {{field.tips}}
             </view>
         </t-cell>
+        
 
     </block>
     <view class="button-example" wx:if="{{!loading}}">
-        <t-button theme="light" block size="large" bind:tap='save'>仅保存</t-button>
+        <t-button theme="light" block size="large" bind:tap='save'>仅保存-section</t-button>
         <t-button theme="primary" block size="large">保存并提交</t-button>
     </view>
-    
    
 
     <!-- 年月日 -->

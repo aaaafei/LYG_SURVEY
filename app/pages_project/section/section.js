@@ -195,8 +195,8 @@ Page({
      */
     // 生命周期函数--监听页面加载
     onLoad: function (options) {
-        console.log(options);
-        this.getFormFields("GXJS_GX");
+        if (!options) {options.type_code = 'GXJS_GX'}
+        this.getFormFields(options.type_code);
     },
     // 生命周期函数--监听页面初次渲染完成
     onReady: function () {

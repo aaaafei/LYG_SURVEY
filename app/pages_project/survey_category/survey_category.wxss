@@ -6,10 +6,14 @@ page {
   page .round-image {
     border-radius: 12rpx;
   }
+
+  .top-wrapper {
+    height: 20vh;
+  }
   
   .side-bar-wrapper {
     display: flex;
-    height: 100vh;
+    height: 80vh;
     overflow: hidden;
   }
   
@@ -34,4 +38,32 @@ page {
     height: 96rpx;
     border: 2rpx solid #e7e7e7;
   }
+
+  .btn-wrapper {
+    height: 100%;
+  }
   
+  .btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 120rpx;
+    height: 100%;
+    color: white;
+  }
+  
+  .delete-btn {
+    background-color: #e34d59;
+  }
+  
+  .edit-btn {
+    background-color: #0052d9;
+  }
+  
+  .favor-btn {
+    background-color: #0052d9;
+  }
+  
+  .info {
+      padding: 10rpx 50rpx;
+  }

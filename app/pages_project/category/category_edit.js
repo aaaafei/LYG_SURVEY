@@ -1,10 +1,11 @@
-// pages_project/category/category.js
+// pages_project/category/category_edit.js
 Page({
     /**
      * 初始数据
      */
     data: {
         formFields: [],
+        formData:{},
         // 时间配置
         mode: '',
         monthVisible: false,
@@ -149,13 +150,36 @@ Page({
               'content-type': 'application/json'
             },
             success: function (res) { 
-                console.log(res.data);
                 _this.data.loading = false;
                 _this.data.formFields = res.data.formFields;
                 _this.setData({
                     formFields: res.data.formFields,
-                    loading: _this.data.loading,
+                    // loading: _this.data.loading,
                 });
+                //
+                _this.getFormData("GXJS_ZT_DATA");
+            }
+          });
+    },
+    getFormData(param) {
+        let _this = this;
+        wx.request({
+            url: 'https://easydoc.net/mock/u/58236996/'+param,
+            method: 'POST',
+            data: {
+            },
+            header: {
+              'content-type': 'application/json'
+            },
+            success: function (res) { 
+                for(let i in _this.data.formFields) {
+                    let code = _this.data.formFields[i].code;
+                    _this.data.formFields[i].value = res.data[code];
+                    _this.setData({
+                        formFields:  _this.data.formFields,
+                        loading: _this.data.loading,
+                    });
+                }
             }
           });
     },
@@ -166,10 +190,10 @@ Page({
     // 生命周期函数--监听页面加载
     onLoad: function (options) {
         console.log(options);
-        setTimeout(()=> {
-            this.getFormFields(options.type_code);
-        },500);
-        // this.getFormFields(options.type_code);
+        // this.getFormFields(options.type_code).then(res => {
+        //     this.getFormData("GXJS_GX_DATA");
+        // });
+        this.getFormFields(options.type_code);
     },
     // 生命周期函数--监听页面初次渲染完成
     onReady: function () {

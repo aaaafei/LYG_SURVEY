@@ -9,8 +9,8 @@ App({
     },
     globalData: {
         isConnected: true,
-        API_BASE: 'https://jsuss.cn/api/',
-        // API_BASE:'https://cn-cd-dx-7.natfrp.cloud:17700/',
+        // API_BASE: 'https://jsuss.cn/api/',
+        API_BASE:'http://10.60.7.222',
     }
 });
 

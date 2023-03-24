@@ -2,6 +2,7 @@
     "component": true,
     "usingComponents": {
         "t-side-bar": "tdesign-miniprogram/side-bar/side-bar",
-        "t-side-bar-item": "tdesign-miniprogram/side-bar-item/side-bar-item"
+        "t-side-bar-item": "tdesign-miniprogram/side-bar-item/side-bar-item",
+        "t-sticky": "tdesign-miniprogram/sticky/sticky"
     }
 }

@@ -6,8 +6,10 @@
         "pages_project/surveys/surveys",
         "pages_project/survey_unit/survey_unit",
         "pages_project/category/category",
+        "pages_project/category/category_edit",
         "pages_project/survey_category/survey_category",
-        "pages_project/section/section"
+        "pages_project/section/section",
+        "pages_project/section/section_edit"
     ],
     "subpackages": [
     ],
@@ -19,6 +21,7 @@
         "t-side-bar-item": "tdesign-miniprogram/side-bar-item/side-bar-item",
         "t-cell-group": "tdesign-miniprogram/cell-group/cell-group",
         "t-cell": "tdesign-miniprogram/cell/cell",
+        "t-swipe-cell": "tdesign-miniprogram/swipe-cell/swipe-cell",
         "t-image": "tdesign-miniprogram/image/image",
         "t-input": "tdesign-miniprogram/input/input",
         "t-divider": "tdesign-miniprogram/divider/divider",
@@ -27,7 +30,9 @@
         "t-picker": "tdesign-miniprogram/picker/picker",
         "t-picker-item": "tdesign-miniprogram/picker-item/picker-item",
         "t-cascader": "tdesign-miniprogram/cascader/cascader",
-        "t-toast": "tdesign-miniprogram/toast/toast"
+        "t-toast": "tdesign-miniprogram/toast/toast",
+        "t-fab": "tdesign-miniprogram/fab/fab",
+        "t-search": "tdesign-miniprogram/search/search"
     },
     "window": {
         "backgroundTextStyle": "light",

@@ -1,6 +1,6 @@
 <!--pages_project/category/category.wxml-->
 <view>
-    <t-divider content="新增总体信息" />
+    <t-divider content="编辑总体信息" />
     <view wx:if="{{loading}}">
         请耐心等待数据加载
     </view>
