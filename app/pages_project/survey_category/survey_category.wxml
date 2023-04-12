@@ -23,7 +23,7 @@
                 <t-cell-group>
                     <block wx:for="{{item.items}}" wx:key="index" wx:for-item="cargo">
                         <t-swipe-cell>
-                            <t-cell title="{{cargo.label}}">
+                            <t-cell title="{{'ID-' + cargo.ID}}">
                                 <t-image shape="round" src="{{cargo.image || '../../../images/order-details/icon-ddsh.png'}}" slot="image" lazy t-class="image" />
                             </t-cell>
                             <view slot="right" class="btn-wrapper">

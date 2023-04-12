@@ -11,15 +11,37 @@ Page({
         pcdyNote:'请选择普查单元',
         pcdyCode:'',
         pcdyVisible:false,
+        ztType:'',
+        categoryCode:'',
+        typeCodeMap: {
+            'jtrx':{'name':'人行通道', 'type': 'Zt', 'typename': ''},
+            'jtdl':{'name':'地下道路', 'type': 'Zt', 'typename': ''},
+            'jttc':{'name':'地下停车场', 'type': 'Zt', 'typename': ''},
+            'gxjs':{'name':'给水', 'type': 'Zt', 'typename': '管线'},
+            'gxzss':{'name':'再生水', 'type': 'Zt', 'typename': '管线'},
+            'gxys':{'name':'雨水', 'type': 'Zt', 'typename': '管线'},
+            'gxws':{'name':'污水', 'type': 'Zt', 'typename': '管线'},
+            'gxrl':{'name':'热力', 'type': 'Zt', 'typename': '管线'},
+            'gxrq':{'name':'燃气', 'type': 'Zt', 'typename': '管线'},
+            'gxdl':{'name':'电力', 'type': 'Zt', 'typename': '管线'},
+            'gxyxd':{'name':'有线电', 'type': 'Zt', 'typename': '管线'},
+            'gxtx':{'name':'通信', 'type': 'Zt', 'typename': '管线'},
+            'gxzhgl':{'name':'综合管廊（沟）', 'type': 'Zt', 'typename': '管线'},
+            'gxgy':{'name':'工业', 'type': 'Zt', 'typename': '管线'},
+            'qtrf':{'name':'人防工程', 'type': 'Zt', 'typename': ''},
+            'qtfq':{'name':'废弃工程', 'type': 'Zt', 'typename': ''},
+            'qtqt':{'name':'其他工程', 'type': 'Zt', 'typename': ''},
+        }
     },
     onSideBarChange(e) {
         const {
             value
         } = e.detail;
-
         this.setData({
-            sideBarIndex: value
+            sideBarIndex: value,
+            ztType: this.data.categories[value].code
         });
+        this.getCategories();
     },
     onCategoryNew(e) {
         let type_code = this.data.categories[this.data.sideBarIndex].code;
@@ -76,33 +98,67 @@ Page({
             }
         })
     },
-    getCategories(param) {
+    getCategories() {
         wx.request({
-            url: getApp().globalData.API_BASE + `/system/gxjsZt/list`,
+            url: getApp().globalData.API_BASE + '/system/'+this.data.ztType+'Zt/list',
+            // url: 'https://easydoc.net/mock/u/58236996/categories',
             method: 'POST',
             header: {
                 'content-type': 'application/x-www-form-urlencoded',
                 'cookie': wx.getStorageSync("sessionid")
             },
             data: {
-                PCDYBH: param
+                PCDYBH: this.data.pcdyCode
             },
             success: (res) => {
+                let _categories = [];
+                for (let key in this.data.typeCodeMap) {
+                    let oo = {};
+                    if (key == this.data.ztType) {
+                        oo = {
+                            "label": this.data.typeCodeMap[this.data.ztType].name,
+                            "code": this.data.ztType,
+                            "title": this.data.typeCodeMap[this.data.ztType].name+this.data.typeCodeMap[this.data.ztType].typename+"总体信息",
+                            "badgeProps": {
+                                "count": res.data.total
+                            },
+                            "items": res.data.rows
+                        }
+                    }else {
+                        oo = {
+                            "label": this.data.typeCodeMap[key].name,
+                            "code": key,
+                            "title": this.data.typeCodeMap[key].name+this.data.typeCodeMap[key].typename+"总体信息",
+                            "badgeProps": {
+                                "count": 0
+                            },
+                            "items": []
+                        }
+                    }
+                    _categories.push(oo);
+                }
                 this.setData({
-                    categories: res.data.rows,
+                    categories: _categories,
                 });
             }
         })
     },
     // 生命周期函数--监听页面加载
     onLoad: function (options) {
-        console.log(options);
+        if(!(options && options.ztType)) {
+            this.setData({
+                ztType : 'gxjs'
+            })
+        } 
+        this.setData({
+            sideBarIndex : Object.keys(this.data.typeCodeMap).indexOf(this.data.ztType)
+        });
         if(options && options.pcdyCode) {
             this.setData({
                 pcdyCode: options.pcdyCode,
                 pcdyNote:options.pcdyNote
             });
-            this.getCategories(options.pcdyCode);
+            this.getCategories();
         }else {
             this.getPcdyOptions("");
         }

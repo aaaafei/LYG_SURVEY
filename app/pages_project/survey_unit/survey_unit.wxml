@@ -18,12 +18,12 @@
                 <t-cell-group>
                     <block wx:for="{{item.items}}" wx:key="index" wx:for-item="cargo">
                         <t-swipe-cell>
-                            <t-cell title="{{cargo.label}}" arrow url="{{'../survey_category/survey_category?categoryCode='+cargo.code+'&categoryNote='+cargo.label+'&pcdyCode='+pcdyCode+'&pcdyNote='+pcdyNote}}">
+                            <t-cell title="{{cargo.SSMC+'['+cargo.SSWZ+']'}}" arrow url="{{'../survey_category/survey_category?categoryCode='+(cargo.BSM || cargo.XLBSM)+'&categoryNote='+cargo.SSMC+'&pcdyCode='+cargo.PCDYBH+'&pcdyNote='+pcdyNote+'&ztType='+ztType}}">
                                 <t-image shape="round" src="{{cargo.image || '../../../images/order-details/icon-ddsh.png'}}" slot="image" lazy t-class="image" />
                             </t-cell>
                             <view slot="right" class="btn-wrapper">
-                                <view class="btn edit-btn" data-code="{{cargo.code}}" bind:tap="onEdit">编辑</view>
-                                <view class="btn delete-btn" data-code="{{cargo.code}}" bind:tap="onDelete">删除</view>
+                                <view class="btn edit-btn" data-code="{{cargo.ID}}" bind:tap="onEdit">编辑</view>
+                                <view class="btn delete-btn" data-code="{{cargo.ID}}" bind:tap="onDelete">删除</view>
                             </view>
                         </t-swipe-cell>
                     </block>
@@ -32,4 +32,6 @@
         </view>
     </view>
     <t-toast id="t-toast" />
+    
+
 </view>

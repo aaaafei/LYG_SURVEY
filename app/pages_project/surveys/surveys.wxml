@@ -4,12 +4,12 @@
         <t-search model:value="{{value}}" placeholder="搜索：行政区划、道路名称" />
     </view>
     <view>
-        <t-divider content="第{{curPage}}页，共{{totalPage}}页，{{total}}条数据" />
+        <t-divider content="第{{curPage}}页，共{{totalPage}}页，{{total}}条数据"   />
     </view>
     <view class="content">
-        <block wx:for="{{surveys}}" wx:key="index" wx:for-item="item">
-            <t-cell title="{{((curPage-1)*pageSize+index+1) + '. ' + item.QDMC + '-' + item.ZDMC}}" description="{{item.XZQHWZ + '-' + item.DLMC}}" note="查看详细" url="{{'../survey_unit/survey_unit?pcdyCode='+item.pcdybh+'&pcdyNote='+item.XZQHWZ+ '_' + item.DLMC}}" hover arrow />
-        </block>
+        <t-cell-group wx:for="{{surveys}}" wx:key="index" wx:for-item="item">
+            <t-cell title="{{((curPage-1)*pageSize+index+1) + '. ' + item.QDMC + '-' + item.ZDMC}}" description="{{'[' + item.PCDYBH +']' + item.XZQHWZ + '-' + item.DLMC}}" note="详细" url="{{'../survey_unit/survey_unit?pcdyCode='+item.pcdybh+'&pcdyNote='+item.XZQHWZ+ '_' + item.DLMC}}" hover arrow />
+        </t-cell-group>
         <view class="button-example">
             <t-button theme="light" block size="large" bind:tap='prePage'>上一页</t-button>
             <t-button theme="primary" block size="large" bind:tap='nextPage'>下一页</t-button>
