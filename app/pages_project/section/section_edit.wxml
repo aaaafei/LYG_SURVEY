@@ -70,7 +70,7 @@
     </block>
     <view class="button-example" wx:if="{{!loading && pageMode!='view'}}">
         <!-- <t-button theme="light" block size="large" bind:tap='save'>仅保存-section</t-button> -->
-        <t-button theme="primary" block size="large" bind:tap="submit">保存</t-button>
+        <t-button theme="primary" block size="large" bind:tap="submit">保存修改</t-button>
     </view>
    
     <t-dialog visible="{{showTextAndTitle}}" title="提示" content="{{dialogContent}}" confirm-btn="{{ confirmBtn }}" bind:confirm="closeDialog" />

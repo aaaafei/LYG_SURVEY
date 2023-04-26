@@ -67,8 +67,8 @@
 
     </block>
     <view class="button-example" wx:if="{{!loading}}">
-        <t-button theme="light" block size="large" bind:tap='save'>仅保存</t-button>
-        <t-button theme="primary" block size="large" bind:tap='submit'>保存并提交</t-button>
+        <!-- <t-button theme="light" block size="large" bind:tap='save'>仅保存</t-button> -->
+        <t-button theme="primary" block size="large" bind:tap='submit'>新增</t-button>
     </view>
     
     <t-dialog visible="{{showTextAndTitle}}" title="提示" content="{{dialogContent}}" confirm-btn="{{ confirmBtn }}" bind:confirm="closeDialog" />

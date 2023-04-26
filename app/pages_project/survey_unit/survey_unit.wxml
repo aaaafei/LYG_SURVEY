@@ -25,7 +25,7 @@
                 <t-cell-group>
                     <block wx:for="{{item.items}}" wx:key="index" wx:for-item="cargo">
                         <t-swipe-cell>
-                            <t-cell title="{{(cargo.SSMC||cargo.ZFBM)+'['+cargo.SSWZ+']'}}" arrow url="{{'../survey_category/survey_category?categoryCode='+(cargo.BSM || cargo.XLBSM)+'&categoryNote='+cargo.SSMC+'['+cargo.SSWZ+']'+'&pcdyCode='+cargo.PCDYBH+'&pcdyNote='+pcdyNote+'&ztType='+ztType}}">
+                            <t-cell title="{{(cargo.SSMC||cargo.ZFBM)+'['+cargo.SSWZ+']'}}" arrow url="{{'../survey_category/survey_category?categoryCode='+(cargo.BSM || cargo.XLBSM)+'&categoryNote='+(cargo.SSMC||cargo.ZFBM)+'['+cargo.SSWZ+']'+'&pcdyCode='+cargo.PCDYBH+'&pcdyNote='+pcdyNote+'&ztType='+ztType}}">
                                 <t-image shape="round" src="{{cargo.image || '../../../images/order-details/icon-ddsh.png'}}" slot="image" lazy t-class="image" />
                             </t-cell>
                             <view slot="right" class="btn-wrapper">

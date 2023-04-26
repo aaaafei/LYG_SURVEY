@@ -190,7 +190,9 @@ Page({
         });
     },
     submit() {
-
+        if(this.validateForm()) {
+            this.save();
+        };
     },
     async getFormFields() {
         let _this = this;
@@ -291,8 +293,9 @@ Page({
                 showTextAndTitle: true,
                 dialogContent: item.name + ' 为必填项，请完善后再提交',
             });
-            break;
+            return false;
         }
+        return true;
     },
     closeDialog() {
         this.setData({
