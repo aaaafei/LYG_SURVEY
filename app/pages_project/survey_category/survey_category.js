@@ -21,17 +21,17 @@ Page({
             'jtrx':{'name':'人行通道', 'categories': [{'code':'Qj','name':'区间属性'}]},
             'jtdl':{'name':'地下道路', 'categories': [{'code':'Qj','name':'区间属性'}]},
             'jttc':{'name':'地下停车场', 'categories': [{'code':'Qj','name':'区间属性'}]},
-            'gxjs':{'name':'给水', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'}]},
-            'gxzss':{'name':'再生水', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'}]},
-            'gxys':{'name':'雨水', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'}]},
-            'gxws':{'name':'污水', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'}]},
-            'gxrl':{'name':'热力', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'}]},
-            'gxrq':{'name':'燃气', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'}]},
-            'gxdl':{'name':'电力', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'}]},
-            'gxyxd':{'name':'有线电', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'}]},
-            'gxtx':{'name':'通信', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'}]},
-            'gxzhgl':{'name':'综合管廊（沟）', 'categories': [{'code':'Qj','name':'区间属性'}]},
-            'gxgy':{'name':'工业', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'}]},
+            'gxjs':{'name':'给水', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'},{'code':'Bhd','name':'管线变化点'}]},
+            'gxzss':{'name':'再生水', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'},{'code':'Bhd','name':'管线变化点'}]},
+            'gxys':{'name':'雨水', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'},{'code':'Bhd','name':'管线变化点'}]},
+            'gxws':{'name':'污水', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'},{'code':'Bhd','name':'管线变化点'}]},
+            'gxrl':{'name':'热力', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'},{'code':'Bhd','name':'管线变化点'}]},
+            'gxrq':{'name':'燃气', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'},{'code':'Bhd','name':'管线变化点'}]},
+            'gxdl':{'name':'电力', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'},{'code':'Bhd','name':'管线变化点'}]},
+            'gxyxd':{'name':'有线电', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'},{'code':'Bhd','name':'管线变化点'}]},
+            'gxtx':{'name':'通信', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'},{'code':'Bhd','name':'管线变化点'}]},
+            'gxzhgl':{'name':'综合管廊（沟）', 'categories': [{'code':'Qj','name':'区间属性'},{'code':'Bhd','name':'管线变化点'}]},
+            'gxgy':{'name':'工业', 'categories': [{'code':'Gx','name':'管线'},{'code':'Gd','name':'管点'},{'code':'Bhd','name':'管线变化点'}]},
             'qtrf':{'name':'人防工程', 'categories': [{'code':'Sx','name':'属性'}]},
             'qtfq':{'name':'废弃工程', 'categories': [{'code':'Sx','name':'属性'}]},
             'qtqt':{'name':'其他工程', 'categories': [{'code':'Sxa','name':'属性'}]},
@@ -49,22 +49,45 @@ Page({
         this.getSections();
     },
     onSectionNew(e) {
-        let type_code = this.data.sections[this.data.sideBarIndex].code
         wx.navigateTo({
-            url: `../section/section?type_code=` + type_code,
+            url: `../section/section?ztType=` + this.data.ztType + '&cateType=' + this.data.cateType + '&glbsm=' + this.data.categoryCode,
         });
     },
     // cell listener
+    onView(e) {
+        const {code} = e.currentTarget.dataset;
+        let ztType = this.data.ztType
+        let cateType = this.data.cateType;
+        wx.navigateTo({
+          url: '../section/section_edit?pageMode=view&id='+code+'&ztType='+ztType+'&cateType='+cateType,
+        });
+    },
     onEdit(e) {
         const {code} = e.currentTarget.dataset;
-        let type_code = this.data.sections[this.data.sideBarIndex].code;
+        let ztType = this.data.ztType
+        let cateType = this.data.cateType;
         wx.navigateTo({
-          url: '../section/section_edit?code='+code+'&type_code='+type_code,
+          url: '../section/section_edit?id='+code+'&ztType='+ztType+'&cateType='+cateType,
         });
     },
     onDelete(e) {
-        wx.showToast({
-            title: 'DELETE',
+        const {code} = e.currentTarget.dataset;
+        wx.request({
+            url: getApp().globalData.API_BASE + '/system/'+this.data.ztType+this.data.cateType+'/remove',
+            method: 'POST',
+            header: {
+                'content-type': 'application/x-www-form-urlencoded',
+                'cookie': wx.getStorageSync("sessionid")
+            },
+            data: {
+                ids: code
+            },
+            success: (res) => {
+                wx.showToast({
+                    title: res.data.msg,
+                })
+                this.getSections();
+            }
         })
     },
     getSections() {
@@ -131,7 +154,6 @@ Page({
                 ztType:options.ztType,
                 cateType:this.data.typeCodeMap[options.ztType].categories[0].code,
             });
-            this.getSections(options.categoryCode);
         }
     },
     // 生命周期函数--监听页面初次渲染完成
@@ -139,6 +161,7 @@ Page({
     },
     // 生命周期函数--监听页面显示
     onShow: function () {
+        this.getSections();
     },
     // 生命周期函数--监听页面隐藏
     onHide: function () {

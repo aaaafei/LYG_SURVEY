@@ -9,7 +9,7 @@
         </view>
         <t-divider content="普查区间信息" />
         <view style="text-align: right;">
-            <t-button theme="light" size="large" bind:tap="onSectionNew">新增-{{sections[sideBarIndex].label}}-属性信息</t-button>
+            <t-button theme="light" size="large" bind:tap="onSectionNew">新增-{{sections[sideBarIndex].label}}-信息</t-button>
         </view>
     </view>
 
@@ -27,8 +27,9 @@
                                 <t-image shape="round" src="{{cargo.image || '../../../images/order-details/icon-ddsh.png'}}" slot="image" lazy t-class="image" />
                             </t-cell>
                             <view slot="right" class="btn-wrapper">
-                                <view class="btn edit-btn" data-code="{{cargo.code}}" bind:tap="onEdit">编辑</view>
-                                <view class="btn delete-btn" data-code="{{cargo.code}}" bind:tap="onDelete">删除</view>
+                                <view class="btn view-btn" data-code="{{cargo.ID}}" bind:tap="onView">查看</view>
+                                <view class="btn edit-btn" data-code="{{cargo.ID}}" bind:tap="onEdit">编辑</view>
+                                <view class="btn delete-btn" data-code="{{cargo.ID}}" bind:tap="onDelete">删除</view>
                             </view>
                         </t-swipe-cell>
                     </block>

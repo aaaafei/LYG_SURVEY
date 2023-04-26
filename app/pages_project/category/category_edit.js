@@ -6,6 +6,10 @@ Page({
     data: {
         formFields: [],
         formData:{},
+        id:'',
+        ztType:'',
+        pcdyCode:'',
+        pageMode: '',
         // 时间配置
         mode: '',
         monthVisible: false,
@@ -23,6 +27,10 @@ Page({
         currentListPickerField: '',
         currentListItemValue: '',
         currentListOptions: [],
+         // dialog
+         confirmBtn: { content: '知道了', variant: 'base' },
+         showTextAndTitle: false,
+         dialogContent: ''
     },
 
     /**
@@ -131,55 +139,99 @@ Page({
         });
     },
     save() {
+        let form = {};
         for (let i in this.data.formFields) {
             let item = this.data.formFields[i];
-            console.log(item.name, ": ", item.value);
+            form[item.code] = item.value;
         }
+        form['ID'] = this.data.id;
+        wx.request({
+            url: getApp().globalData.API_BASE + '/system/'+this.data.ztType+'Zt/edit',
+            method: "POST",
+            header: {
+                'content-type': 'application/x-www-form-urlencoded',
+                'cookie': wx.getStorageSync("sessionid")
+            },
+            data: form,
+            success : (res) => {
+                wx.showToast({
+                    title: res.data.msg,
+                    duration: 2000
+                });
+                setTimeout((e)=>{
+                    wx.navigateBack({
+                        delta: 1
+                    });
+                },2000);
+            }
+        });
     },
     submit() {
-
+        if(this.validateForm()) {
+            this.save();
+        };
     },
-    getFormFields(param) {
+    validateForm(){
+        for (let i in this.data.formFields) {
+            let item = this.data.formFields[i];
+            if (!item.required) continue;
+            if (item.value != undefined) continue;
+            this.setData({
+                showTextAndTitle: true,
+                dialogContent: item.name + ' 为必填项，请完善后再提交',
+            });
+            return false;
+        }
+        return true;
+    },
+    closeDialog() {
+        this.setData({
+            showTextAndTitle: false
+        });
+    },
+    getFormFields() {
         let _this = this;
         wx.request({
-            url: 'https://easydoc.net/mock/u/58236996/'+param,
+            url: 'https://easydoc.net/mock/u/58236996/'+this.data.ztType.toUpperCase() + '_ZT',
             method: 'GET',
             data: {
             },
             header: {
-              'content-type': 'application/json'
+              'content-type': 'application/json',
+              'cookie': wx.getStorageSync("sessionid")
             },
-            success: function (res) { 
-                _this.data.loading = false;
-                _this.data.formFields = res.data.formFields;
-                _this.setData({
+            success: (res) => { 
+                this.data.loading = false;
+                this.data.formFields = res.data.formFields;
+                this.setData({
                     formFields: res.data.formFields,
                     // loading: _this.data.loading,
                 });
                 //
-                _this.getFormData("GXJS_ZT_DATA");
+                this.getFormData();
             }
           });
     },
-    getFormData(param) {
+    getFormData() {
         let _this = this;
         wx.request({
-            url: 'https://easydoc.net/mock/u/58236996/'+param,
-            method: 'POST',
+            url: getApp().globalData.API_BASE + '/system/'+this.data.ztType+'Zt/getEntityById/' + this.data.id,
+            method: 'GET',
             data: {
             },
             header: {
-              'content-type': 'application/json'
+              'content-type': 'application/json',
+              'cookie': wx.getStorageSync("sessionid")
             },
-            success: function (res) { 
-                for(let i in _this.data.formFields) {
-                    let code = _this.data.formFields[i].code;
-                    _this.data.formFields[i].value = res.data[code];
-                    _this.setData({
-                        formFields:  _this.data.formFields,
-                        loading: _this.data.loading,
-                    });
+            success: (res) => { 
+                for(let i in this.data.formFields) {
+                    let code = this.data.formFields[i].code;
+                    this.data.formFields[i].value = res.data[code];
                 }
+                this.setData({
+                    formFields:  this.data.formFields,
+                    loading: false,
+                });
             }
           });
     },
@@ -190,10 +242,12 @@ Page({
     // 生命周期函数--监听页面加载
     onLoad: function (options) {
         console.log(options);
-        // this.getFormFields(options.type_code).then(res => {
-        //     this.getFormData("GXJS_GX_DATA");
-        // });
-        this.getFormFields(options.type_code);
+        this.setData({
+            ztType: options.ztType,
+            id: options.id,
+            pageMode: options.pageMode || ''
+        })
+        this.getFormFields();
     },
     // 生命周期函数--监听页面初次渲染完成
     onReady: function () {

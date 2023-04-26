@@ -3,15 +3,18 @@
   <view class="userinfo">
  
     <view style="margin-bottom:60px;">
-      <image src="../../images/logo.png" style="width: 270px; height: 90px; display: block;margin:0 auto;"/> 
-      <view style="font-size: 26px;color: rgb(73, 115, 180);font-weight:bold;margin:0 auto;">地下基础设施普查信息系统</view>
+      <image src="../../images/login-background.jpg" style="width: 290px; height: 120px; display: block;margin:0 auto;border-radius: 10px;"/> 
+      <view style="font-size: 26px;color: rgb(73, 115, 180);font-weight:bold;margin:0 auto;text-align: center;">
+        <view>连云港地下市政基础设施</view>
+        <view>初查录入系统</view>
+      </view>
     </view>
  
   
 
       <!--Tab布局-->
       <view class='title'>
-        <view class="{{0 == currentIndex ? 'title-sel-selected' : 'title-sel'}}" bindtap='titleClick' data-idx='0'>
+        <view class="{{0 == currentIndex ? 'title-sel-selected' : 'title-sel'}}" bindtap='titleClick' data-idx='0' style="display: none;">
           <text>昵称登录</text>
           <hr class="line-style"/>
         </view>
@@ -58,16 +61,16 @@
     </view>
     <t-demo title="特别说明" desc="" >
         <view class="weui-article__p" style="font-size:12px;">
-            1、本小程序为地下基础设施普查信息系统的移动端应用
+            1、本小程序为连云港地下市政基础设施初查录入系统的移动端应用
         </view>
         <view class="weui-article__p" style="font-size:12px;">
-            2、使用本小程序人群为地下基础设施普查信息系统账号的内部人员
+            2、使用本小程序人群为连云港地下市政基础设施初查录入系统账号的内部人员
         </view>
         <view class="weui-article__p" style="font-size:12px;">
-            3、使用小程序前需要在地下基础设施普查信息系统中将系统账号与微信昵称进行绑定
+            3、使用小程序前需要在连云港地下市政基础设施初查录入系统中将系统账号与微信昵称进行绑定
         </view>
         <view class="weui-article__p" style="font-size:12px;">
-            4、本小程序需要获取使用者的昵称用于地下基础设施普查信息系统的自动登陆
+            4、本小程序需要获取使用者的昵称用于连云港地下市政基础设施初查录入系统的自动登陆
         </view>
     </t-demo>
 

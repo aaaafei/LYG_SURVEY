@@ -5,6 +5,10 @@ Page({
      */
     data: {
         formFields: [],
+        ztType:'',
+        pcdyCode:'',
+        listOptionsData: [],
+        hasListOptionsData: true,
         // 时间配置
         mode: '',
         monthVisible: false,
@@ -12,7 +16,7 @@ Page({
         month: '2000-10',
         date: '2000-01-01',
         start: '1949-10-01 00:00:00',
-        end: '2025-01-01 00:00:00',
+        end: '2030-01-01 00:00:00',
         currentDateField: '',
         currentDateValue: '',
         // 骨架屏
@@ -22,6 +26,10 @@ Page({
         currentListPickerField: '',
         currentListItemValue: '',
         currentListOptions: [],
+        // dialog
+        confirmBtn: { content: '知道了', variant: 'base' },
+        showTextAndTitle: false,
+        dialogContent: ''
     },
 
     /**
@@ -129,47 +137,187 @@ Page({
             formFields: this.data.formFields,
         });
     },
+    handleFloatInputChange(e) {
+        let value = e.detail.value;
+        let id = e.target.id;
+        let fieldCode = e.target.dataset.fieldCode;
+        const isNumber = /^\d+(\.)?(\d+)?$/.test(e.detail.value);
+        if(!isNumber) {
+            wx.showToast({
+              title: '请输入正确的数字',
+            });
+            value = '';
+        }
+        for (let i in this.data.formFields) {
+            if (this.data.formFields[i].code == fieldCode) {
+                this.data.formFields[i]['value'] = value;
+                break;
+            }
+        }
+        this.setData({
+            formFields: this.data.formFields,
+        });
+    },
+    //
     save() {
+        this.validateForm();
+        let form = {};
         for (let i in this.data.formFields) {
             let item = this.data.formFields[i];
-            console.log(item.name, ": ", item.value);
+            if(item.value == undefined) {
+                item.value = '';
+            }
+            form[item.code] = item.value;
         }
+        wx.request({
+            url: getApp().globalData.API_BASE + '/system/'+this.data.ztType+'Zt/add',
+            method: "POST",
+            header: {
+                'content-type': 'application/x-www-form-urlencoded',
+                'cookie': wx.getStorageSync("sessionid")
+            },
+            data: form,
+            success : (res) => {
+                wx.showToast({
+                    title: res.data.msg,
+                    duration: 2000
+                });
+                setTimeout((e)=>{
+                    wx.navigateBack({
+                        delta: 1
+                    });
+                },2000);
+            }
+        });
     },
     submit() {
-
+        this.validateForm();
     },
-    getFormFields(param) {
+    async getFormFields() {
         let _this = this;
+        await new Promise((resolve, reject) => {
+            wx.request({
+                url: getApp().globalData.API_BASE + '/system/tableFieldInfo/tableSelectField/' + this.data.ztType.toUpperCase() + '_ZT',
+                method: 'GET',
+                header: {
+                  'content-type': 'application/json',
+                  'cookie': wx.getStorageSync("sessionid")
+                },
+                success: (res) => { 
+                    if(res.data.code == 0) {
+                        this.setData({
+                            listOptionsData: res.data.data
+                        });
+                        resolve(res.data)
+                    }else{
+                        this.setData({
+                            hasListOptionsData: false
+                        })
+                        resolve(res)
+                    }
+                    
+                },
+                fail: (err) => {
+                    reject(err);
+                }
+            });
+        }) 
         wx.request({
-            url: 'https://easydoc.net/mock/u/58236996/'+param,
+            url: 'https://easydoc.net/mock/u/58236996/'+this.data.ztType.toUpperCase()+'_ZT',
             method: 'GET',
             data: {
             },
             header: {
               'content-type': 'application/json'
             },
-            success: function (res) { 
+            success: (res) => { 
                 console.log(res.data);
-                _this.data.loading = false;
-                _this.data.formFields = res.data.formFields;
-                _this.setData({
-                    formFields: res.data.formFields,
-                    loading: _this.data.loading,
+                let ff = res.data.formFields;
+                ff = this.setValueByCode(ff, 'PCDYBH', this.data.pcdyCode);
+                if (['jtrx', 'jtdl', 'jttc'].includes(this.data.ztType)) {
+                    ff = this.setValueByCode(ff, 'XLBSM', this.generateUUID());
+                }else {
+                    ff = this.setValueByCode(ff, 'BSM', this.generateUUID());
+                }
+                if (this.data.hasListOptionsData) {
+                    // 设施列表选项
+                    for (let i in ff) {
+                        if (ff[i].data_type != 'list') continue;
+                        let key = ff[i].code;
+                        let _options = this.data.listOptionsData[key];
+                        let arr = [];
+                        for (let ii in _options) {
+                            let oo = {
+                                label: _options[ii].dictLabel,
+                                value: _options[ii].dictValue
+                            };
+                            arr.push(oo);
+                        }
+                        ff[i]['options'] = arr;
+                    }
+                    // 设施列表选项 END
+                }
+                this.setData({
+                    formFields: ff,
+                    loading: false,
                 });
             }
           });
     },
-
+    getItemFromFormFieldsByCode(code) {
+        for (let i in this.data.formFields) {
+            if (this.data.formFields[i].code == code) {
+                return this.data.formFields[i];
+            }
+        }
+    },
+    setValueByCode(jsonArray,code,value){
+        for(let i in jsonArray) {
+            if (jsonArray[i].code == code) {
+                jsonArray[i].value = value;
+                return jsonArray;
+            }
+        }
+    },
+    generateUUID(){
+        let d = new Date().getTime(); // 时间戳
+        // 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+        const uuid = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            const r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+        return uuid;
+    },
+    validateForm(){
+        for (let i in this.data.formFields) {
+            let item = this.data.formFields[i];
+            if (!item.required) continue;
+            if (item.value) continue;
+            this.setData({
+                showTextAndTitle: true,
+                dialogContent: item.name + ' 为必填项，请完善后再提交',
+            });
+            break;
+        }
+    },
+    closeDialog() {
+        this.setData({
+            showTextAndTitle: false
+        });
+    },
     /**
      * 方法列表 END
      */
     // 生命周期函数--监听页面加载
     onLoad: function (options) {
         console.log(options);
-        setTimeout(()=> {
-            this.getFormFields(options.type_code);
-        },500);
-        // this.getFormFields(options.type_code);
+        this.setData({
+            ztType: options.ztType,
+            pcdyCode: options.pcdyCode,
+        });
+        this.getFormFields();
+        
     },
     // 生命周期函数--监听页面初次渲染完成
     onReady: function () {

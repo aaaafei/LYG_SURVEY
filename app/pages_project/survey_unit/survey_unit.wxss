@@ -8,12 +8,12 @@ page {
   }
 
   .top-wrapper {
-    height: 20vh;
+    height: 25vh;
   }
   
   .side-bar-wrapper {
     display: flex;
-    height: 80vh;
+    height: 75vh;
     overflow: hidden;
   }
   
@@ -41,6 +41,10 @@ page {
 
   .btn-wrapper {
     height: 100%;
+  }
+  
+  .view-btn {
+    background-color: #f0c94b;
   }
   
   .btn {

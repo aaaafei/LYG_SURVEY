@@ -6,7 +6,7 @@ const app = getApp()
 
 Page({
     data: {
-        currentIndex: 0,
+        currentIndex: 1,
         userName: null,
         pwd: null,
         switchChecked: false

@@ -6,9 +6,19 @@ Page({
         curPage:1,
         totalPage:1,
         pageSize:20,
+        value:'',
+        searchParams: {
+            pageSize: 20,
+            pageNum: 1,
+            isAsc: 'asc',
+            DLMC: '',
+            PCDYBH: '',
+            XZQHWZ: '',
+            DLDJ: '',
+        }
     },
     //
-    getSurveys(param){
+    getSurveys(){
         let _this = this;
         wx.request({
             url: getApp().globalData.API_BASE + `/system/pcdy/list`,
@@ -17,15 +27,7 @@ Page({
                 'content-type': 'application/x-www-form-urlencoded',
                 'cookie': wx.getStorageSync("sessionid")
             },
-            data: {
-                pageSize: this.data.pageSize,
-                pageNum: this.data.curPage,
-                isAsc: 'asc',
-                DLMC: '',
-                PCDYBH: '',
-                XZQHWZ: '',
-                DLDJ: '',
-            },
+            data: this.data.searchParams,
             success: (res) => {
                 this.setData({
                     surveys: res.data.rows,
@@ -57,6 +59,13 @@ Page({
         }
         this.setData({
             curPage: this.data.curPage + 1
+        });
+        this.getSurveys();
+    },
+    onSearchChange(e) {
+        this.data.searchParams.DLMC = e.detail.value;
+        this.setData({
+            searchParams: this.data.searchParams
         });
         this.getSurveys();
     },

@@ -8,12 +8,12 @@ page {
   }
 
   .top-wrapper {
-    height: 20vh;
+    height: 25vh;
   }
   
   .side-bar-wrapper {
     display: flex;
-    height: 80vh;
+    height: 75vh;
     overflow: hidden;
   }
   
@@ -52,6 +52,10 @@ page {
     color: white;
   }
   
+  .view-btn {
+    background-color: #f0c94b;
+  }
+
   .delete-btn {
     background-color: #e34d59;
   }

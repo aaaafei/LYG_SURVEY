@@ -66,12 +66,12 @@
         </t-cell>
 
     </block>
-    <view class="button-example" wx:if="{{!loading}}">
-        <t-button theme="light" block size="large" bind:tap='save'>仅保存</t-button>
-        <t-button theme="primary" block size="large">保存并提交</t-button>
+    <view class="button-example" wx:if="{{!loading && pageMode!='view'}}">
+        <!-- <t-button theme="light" block size="large" bind:tap='save'>仅保存</t-button> -->
+        <t-button theme="primary" block size="large" bind:tap='submit'>保存</t-button>
     </view>
     
-   
+    <t-dialog visible="{{showTextAndTitle}}" title="提示" content="{{dialogContent}}" confirm-btn="{{ confirmBtn }}" bind:confirm="closeDialog" />
 
     <!-- 年月日 -->
     <t-date-time-picker title="选择日期" visible="{{dateVisible}}" mode="date" defaultValue="{{date}}" format="YYYY-MM-DD" bindchange="onConfirm" bindpick="onColumnChange" bindcancel="hidePicker" start="{{start}}" end="{{end}}" />

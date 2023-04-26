@@ -6,7 +6,7 @@
   消息
 </view> 
    
-<image style="height:22px;width:25px;" src="/images/icon/scan.png" bindtap="scan"></image> 
+<image style="height:22px;width:25px;" src="#" bindtap="scan"></image> 
 </view>  
 </view>
 

@@ -7,14 +7,14 @@
       工作台
     </view> 
        
-    <image style="height:22px;width:25px;" src="#" bindtap="scan"></image> 
+    <image style="height:22px;width:25px;" bindtap="scan"></image> 
   </view> 
 </view>
  
 <view  class="swiper-container">
         <swiper class="swiper1" indicator-dots="true" indicator-active-color="#fff" autoplay circular>
           <swiper-item wx:for="{{banners}}" wx:key="id">
-            <image  mode="aspectFill" data-url="{{item.picUrl}}" src="/images/banner.png" />
+            <image  mode="aspectFill" data-url="{{item.picUrl}}" src="{{item.picUrl}}" />
           </swiper-item>
         </swiper>
       </view> 

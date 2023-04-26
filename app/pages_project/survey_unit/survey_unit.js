@@ -6,6 +6,7 @@ Page({
     data: {
         sideBarIndex: 0,
         scrollTop: 0,
+        loading: true,
         categories: [],
         pcdyOptions:[],
         pcdyNote:'请选择普查单元',
@@ -13,6 +14,8 @@ Page({
         pcdyVisible:false,
         ztType:'',
         categoryCode:'',
+        currentPcdy: {},
+        xzqArray:[],
         typeCodeMap: {
             'jtrx':{'name':'人行通道', 'type': 'Zt', 'typename': ''},
             'jtdl':{'name':'地下道路', 'type': 'Zt', 'typename': ''},
@@ -47,7 +50,7 @@ Page({
         let type_code = this.data.categories[this.data.sideBarIndex].code;
         console.log(type_code);
         wx.navigateTo({
-            url: `../category/category?type_code=` + type_code,
+            url: `../category/category?ztType=` + type_code + '&pcdyCode=' + this.data.pcdyCode,
         });
     },
     // 级联菜单
@@ -55,53 +58,133 @@ Page({
         this.setData({
             pcdyVisible: true
         });
+        this.getPcdyOptions();
     },
     onChange(e) {
         const {
             selectedOptions
         } = e.detail;
-
+        // console.log(selectedOptions);
         this.setData({
-            pcdyNote: selectedOptions.map((item) => item.label).join('_'),
+            pcdyNote: selectedOptions.map((item) => item.label).join('>'),
+            pcdyCode: selectedOptions[2].value
         });
+        this.getCategories()
     },
     // cell listener
+    onView(e) {
+        const {code} = e.currentTarget.dataset;
+        let ztType = this.data.ztType;
+        wx.navigateTo({
+          url: '../category/category_edit?pageMode=view&id='+code+'&ztType='+ztType,
+        });
+    },
     onEdit(e) {
         const {code} = e.currentTarget.dataset;
-        let type_code = this.data.categories[this.data.sideBarIndex].code;
+        let ztType = this.data.ztType;
         wx.navigateTo({
-          url: '../category/category_edit?code='+code+'&type_code='+type_code,
+          url: '../category/category_edit?id='+code+'&ztType='+ztType,
         });
     },
     onDelete(e) {
         const {code} = e.currentTarget.dataset;
-        wx.showToast({
-          title: 'code: ' + code,
-        })
-        
-    },
-    // 获取数据
-    getPcdyOptions(param) {
         wx.request({
-            url: 'https://easydoc.net/mock/u/58236996/PCDY_TREE',
-            method: 'GET',
+            url: getApp().globalData.API_BASE + '/system/'+this.data.ztType+'Zt/remove',
+            method: 'POST',
             header: {
-                'content-type': 'application/json'
+                'content-type': 'application/x-www-form-urlencoded',
+                'cookie': wx.getStorageSync("sessionid")
+            },
+            data: {
+                ids: code
             },
             success: (res) => {
-                this.setData({
-                    pcdyOptions: res.data.areaList,
-                    pcdyCode: res.data.areaList[0].children[0].children[0].value,
-                    pcdyNote: [res.data.areaList[0].label, res.data.areaList[0].children[0].label,res.data.areaList[0].children[0].children[0].label].join('_'),
-                });
-                this.getCategories("");
+                wx.showToast({
+                    title: res.data.msg,
+                })
+                this.getCategories();
             }
         })
     },
+    // 获取数据
+    getPcdyOptions(){
+        wx.request({
+            url: getApp().globalData.API_BASE + `/system/pcdy/list`,
+            method: 'POST',
+            header: {
+                'content-type': 'application/x-www-form-urlencoded',
+                'cookie': wx.getStorageSync("sessionid")
+            },
+            data: {
+                pageSize: 1500,
+                pageNum: 1,
+                isAsc: 'asc',
+                DLMC: '',
+                PCDYBH: '',
+                XZQHWZ: '',
+                DLDJ: '',
+            },
+            success: (res) => {
+                this.buildTree(res.data.rows);
+                if(this.data.pcdyCode == '') {
+                    this.setData({
+                        pcdyCode : this.data.pcdyOptions[0].children[0].children[0].value,
+                        pcdyNote:this.data.pcdyOptions[0].label+'>'+ this.data.pcdyOptions[0].children[0].label+'>'+this.data.pcdyOptions[0].children[0].children[0].label
+                    })
+                    this.getCategories();
+                }
+            }
+        });
+    },
+    buildTree(data){
+        let tree01 = this.buildTreeByAttribute(data, "XZQHWZ");
+        for (let i = 0; i < tree01.length; i++) {
+            const item = tree01[i];
+            let tree02 = this.buildTreeByAttribute(item.children, "DLMC");
+            for (let ii = 0; ii < tree02.length; ii++) {
+                const iitem = tree02[ii];
+                let tree03 = this.buildTreeByAttribute(iitem.children, "PCDYBH");
+                for (let iii = 0; iii < tree03.length; iii++) {
+                    const iiitem = tree03[iii];
+                    const ele = iiitem.children[0];
+                    tree03[iii].label = ele.QDMC + '-' + ele.ZDMC + '[' +ele.PCDYBH + ']';
+                    delete tree03[iii].children;
+                }
+                tree02[ii].children = tree03;
+            }
+            tree01[i].children = tree02;
+        }
+        this.setData({
+            pcdyOptions: tree01
+        })
+    },
+    buildTreeByAttribute(data, attr) {
+        const treeMap = {};
+        const treeData = [];
+        for (let i in data) {
+            let item = data[i];
+            if (treeMap[item[attr]]) {
+                treeMap[item[attr]].children.push(item)
+            }else {
+                treeMap[item[attr]] = {
+                    label: item[attr],
+                    value: item[attr],
+                    children: [item]
+                }
+            }
+        }
+        for (let key in treeMap) {
+            treeData.push(treeMap[key])
+        }
+        return treeData;
+    },
     getCategories() {
+        this.setData({
+            sideBarIndex : Object.keys(this.data.typeCodeMap).indexOf(this.data.ztType)
+        });
+        
         wx.request({
             url: getApp().globalData.API_BASE + '/system/'+this.data.ztType+'Zt/list',
-            // url: 'https://easydoc.net/mock/u/58236996/categories',
             method: 'POST',
             header: {
                 'content-type': 'application/x-www-form-urlencoded',
@@ -139,28 +222,19 @@ Page({
                 }
                 this.setData({
                     categories: _categories,
+                    loading: false,
                 });
             }
         })
     },
     // 生命周期函数--监听页面加载
     onLoad: function (options) {
-        if(!(options && options.ztType)) {
+        if(options) {
             this.setData({
-                ztType : 'gxjs'
-            })
-        } 
-        this.setData({
-            sideBarIndex : Object.keys(this.data.typeCodeMap).indexOf(this.data.ztType)
-        });
-        if(options && options.pcdyCode) {
-            this.setData({
-                pcdyCode: options.pcdyCode,
-                pcdyNote:options.pcdyNote
+                ztType: options.ztType || 'jtrx',
+                pcdyCode: options.pcdyCode || '',
+                pcdyNote:options.pcdyNote || '',
             });
-            this.getCategories();
-        }else {
-            this.getPcdyOptions("");
         }
     },
     // 生命周期函数--监听页面初次渲染完成
@@ -168,6 +242,11 @@ Page({
     },
     // 生命周期函数--监听页面显示
     onShow: function () {
+        if(this.data.pcdyCode != '') {
+            this.getCategories();
+        }else {
+            this.getPcdyOptions();
+        }
     },
     // 生命周期函数--监听页面隐藏
     onHide: function () {

@@ -6,6 +6,12 @@ Page({
     data: {
         formFields: [],
         formData:{},
+        ztType: '',
+        cateType: '',
+        glbsm: '',
+        listOptionsData: [],
+        hasListOptionsData: true,
+        pageMode:'',
         // 时间配置
         mode: '',
         monthVisible: false,
@@ -23,6 +29,10 @@ Page({
         currentListPickerField: '',
         currentListItemValue: '',
         currentListOptions: [],
+        // dialog
+        confirmBtn: { content: '知道了', variant: 'base' },
+        showTextAndTitle: false,
+        dialogContent: ''
     },
 
     /**
@@ -154,18 +164,72 @@ Page({
     },
     // data api functions
     save() {
+        let form = {};
         for (let i in this.data.formFields) {
             let item = this.data.formFields[i];
-            console.log(item.name, ": ", item.value);
+            if(item.value == undefined) {
+                item.value = '';
+            }
+            form[item.code] = item.value;
         }
+        form['ID'] = this.data.id;
+        wx.request({
+            url: getApp().globalData.API_BASE + '/system/'+this.data.ztType+this.data.cateType+'/edit',
+            method: "POST",
+            header: {
+                'content-type': 'application/x-www-form-urlencoded',
+                'cookie': wx.getStorageSync("sessionid")
+            },
+            data: form,
+            success : (res) => {
+                wx.showToast({
+                    title: res.data.msg,
+                    duration: 2000
+                });
+                setTimeout((e)=>{
+                    wx.navigateBack({
+                        delta: 1
+                    });
+                },2000);
+            }
+        });
     },
     submit() {
-
+        if(this.validateForm()){
+            this.save();
+        };
+        
     },
-    getFormFields(param) {
+    async getFormFields() {
         let _this = this;
+        await new Promise((resolve, reject) => {
+            wx.request({
+                url: getApp().globalData.API_BASE + '/system/tableFieldInfo/tableSelectField/' + this.data.ztType.toUpperCase() + '_' + this.data.cateType.toUpperCase(),
+                method: 'GET',
+                header: {
+                  'content-type': 'application/json',
+                  'cookie': wx.getStorageSync("sessionid")
+                },
+                success: (res) => { 
+                    if(res.data.code == 0) {
+                        this.setData({
+                            listOptionsData: res.data.data
+                        });
+                        resolve(res.data)
+                    }else{
+                        this.setData({
+                            hasListOptionsData: false
+                        })
+                        resolve(res)
+                    }
+                },
+                fail: (err) => {
+                    reject(err);
+                }
+            });
+        }) 
         wx.request({
-            url: 'https://easydoc.net/mock/u/58236996/'+param,
+            url: 'https://easydoc.net/mock/u/58236996/'+this.data.ztType.toUpperCase()+'_'+this.data.cateType.toUpperCase(),
             method: 'GET',
             data: {
             },
@@ -173,47 +237,57 @@ Page({
               'content-type': 'application/json'
             },
             success: (res) => { 
-                console.log(res.data.formFields);
-                _this.data.loading = false;
-                _this.data.formFields = res.data.formFields;
-                _this.setData({
-                    formFields: res.data.formFields,
-                    // loading: _this.data.loading,
+                let ff = res.data.formFields;
+                ff = this.setValueByCode(ff, 'GLBSM', this.data.glbsm);
+                if (this.data.hasListOptionsData) {
+                    // 设施列表选项
+                    for (let i in ff) {
+                        if (ff[i].data_type != 'list') continue;
+                        let key = ff[i].code;
+                        let _options = this.data.listOptionsData[key];
+                        let arr = [];
+                        for (let ii in _options) {
+                            let oo = {
+                                label: _options[ii].dictLabel,
+                                value: _options[ii].dictValue
+                            };
+                            arr.push(oo);
+                        }
+                        ff[i]['options'] = arr;
+                    }
+                    // 设施列表选项 END
+                }
+                this.setData({
+                    formFields: ff,
                 });
-                //
-                _this.getFormData("GXJS_GX_DATA");
+                this.getFormData();
             }
           });
     },
-    getFormData(param) {
+    getFormData() {
         let _this = this;
         wx.request({
-            url: 'https://easydoc.net/mock/u/58236996/'+param,
-            method: 'POST',
+            url: getApp().globalData.API_BASE + '/system/'+this.data.ztType+this.data.cateType+'/getEntityById/' + this.data.id,
+            method: 'GET',
             data: {
             },
             header: {
-              'content-type': 'application/json'
+              'content-type': 'application/json',
+              'cookie': wx.getStorageSync("sessionid")
             },
-            success: function (res) { 
-                for(let i in _this.data.formFields) {
-                    let code = _this.data.formFields[i].code;
-                    _this.data.formFields[i].value = res.data[code];
-                    // set list options
-                    if (_this.data.formFields[i].data_type =='list') {
-                        _this.data.formFields[i].options = [
-                            {label:'测试项目0', value:'0'},
-                            {label:'测试项目1', value:'1'},
-                            {label:'测试项目2', value:'2'},
-                            {label:'测试项目3', value:'3'},
-                        ];
-                        _this.data.formFields[i]['label'] = _this.getLabelByValueFromJsonArray(_this.data.formFields[i].options, _this.data.formFields[i].value);
+            success: (res) => { 
+                for(let i in this.data.formFields) {
+                    const item = this.data.formFields[i];
+                    this.data.formFields[i].value = res.data[item.code];
+                    if(item.data_type == 'list') {
+                        this.data.formFields[i].label = this.getLabelByValueFromJsonArray(item.options, item.value);
                     }
-                    _this.setData({
-                        formFields:  _this.data.formFields,
-                        loading: _this.data.loading,
-                    });
                 }
+                // console.log(this.data.formFields);
+                this.setData({
+                    formFields:  this.data.formFields,
+                    loading: false,
+                });
             }
           });
     },
@@ -228,19 +302,49 @@ Page({
     },
     getLabelByValueFromJsonArray(arr,value) {
         for (let i in arr) {
-            if(arr[i].value == value) {
+            if(arr[i].value.toString() == value.toString()) {
                 return arr[i].label;
             }
         }
     },
-
+    setValueByCode(jsonArray,code,value){
+        for(let i in jsonArray) {
+            if (jsonArray[i].code == code) {
+                jsonArray[i].value = value;
+                return jsonArray;
+            }
+        }
+    },
+    validateForm(){
+        for (let i in this.data.formFields) {
+            let item = this.data.formFields[i];
+            if (!item.required) continue;
+            if (item.value != undefined) continue;
+            this.setData({
+                showTextAndTitle: true,
+                dialogContent: item.name + ' 为必填项，请完善后再提交',
+            });
+            return false;
+        }
+        return true;
+    },
+    closeDialog() {
+        this.setData({
+            showTextAndTitle: false
+        });
+    },
     /**
      * 方法列表 END
      */
     // 生命周期函数--监听页面加载
     onLoad: function (options) {
-        if (!options) {options.type_code = 'GXJS_GX'}
-        this.getFormFields(options.type_code);
+        this.setData({
+            ztType: options.ztType,
+            cateType: options.cateType,
+            id: options.id,
+            pageMode: options.pageMode || ''
+        })
+        this.getFormFields();
     },
     // 生命周期函数--监听页面初次渲染完成
     onReady: function () {

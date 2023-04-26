@@ -1,6 +1,6 @@
 <!--pages_project/category/category.wxml-->
 <view>
-    <t-divider content="新增区间信息" />
+    <t-divider content="新增数据" />
     <view wx:if="{{loading}}">
         请耐心等待数据加载
     </view>
@@ -73,6 +73,7 @@
         <t-button theme="primary" block size="large">保存并提交</t-button>
     </view>
    
+    <t-dialog visible="{{showTextAndTitle}}" title="提示" content="{{dialogContent}}" confirm-btn="{{ confirmBtn }}" bind:confirm="closeDialog" />
 
     <!-- 年月日 -->
     <t-date-time-picker title="选择日期" visible="{{dateVisible}}" mode="date" defaultValue="{{date}}" format="YYYY-MM-DD" bindchange="onConfirm" bindpick="onColumnChange" bindcancel="hidePicker" start="{{start}}" end="{{end}}" />
