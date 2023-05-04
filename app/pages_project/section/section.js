@@ -162,7 +162,6 @@ Page({
     },
     //
     save() {
-        this.validateForm();
         let form = {};
         for (let i in this.data.formFields) {
             let item = this.data.formFields[i];
